@@ -1,0 +1,332 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+<!-- 
+文档名称: 销售数据可视化HTML页面生成规则
+创建日期: 2025年6月
+版本: 1.0
+-->
+
+# 销售数据可视化HTML页面生成规则
+
+## 页面结构
+
+### 整体HTML结构
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>呈尚策划销售部数据对比图</title>
+    <!-- CSS样式在此处 -->
+    <style>
+        /* 样式规则在此处 */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>呈尚策划销售部数据对比图</h1>
+        <p>6月9日至6月13日销售数据分析</p>
+    </div>
+    
+    <div class="charts-container">
+        <!-- 图表区域在此处 -->
+    </div>
+</body>
+</html>
+```
+
+## CSS样式规则
+
+### CSS样式定义
+
+```css
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f7f7f7;
+}
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.chart {
+    width: 100%;
+    margin-bottom: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow: hidden;
+}
+img {
+    width: 100%;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+}
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+}
+```
+
+## 图表结构规则
+
+### 图表容器模板
+
+```html
+<!-- 图表容器模板 -->
+<div class="chart">
+    <h2>图表标题</h2>
+    <img src="图表URL地址" alt="图表描述">
+</div>
+```
+
+## 图表生成规则
+
+### 图表生成参数标准
+
+#### 1. 柱状图参数设置
+- 尺寸：宽度900px，高度500px
+- 显示数据标签：是
+- 图表标题位置：顶部居中
+- 图例位置：底部居中
+- 使用分组柱状图展示不同销售人员数据
+
+```javascript
+{
+  data: [{"category": "日期", "value": 数值, "group": "销售员姓名"}, ...],
+  height: 500,
+  axisYTitle: "指标单位",
+  title: "图表标题",
+  width: 900,
+  group: true
+}
+```
+
+#### 2. 雷达图参数设置
+- 尺寸：宽度900px，高度500px
+- 显示数据标签：是
+- 显示图例：是
+- 每个销售人员使用不同颜色
+
+```javascript
+{
+  data: [{"name": "指标名称", "value": 数值, "group": "销售员姓名"}, ...],
+  height: 500,
+  title: "销售人员综合表现",
+  width: 900
+}
+```
+
+#### 3. 折线图参数设置
+- 尺寸：宽度900px，高度500px
+- 显示数据标签：是
+- Y轴从0开始
+- 数据点使用实心圆点
+- 线条粗细适中
+
+```javascript
+{
+  data: [{"time": "日期", "value": 数值, "group": "指标名称"}, ...],
+  height: 500,
+  axisYTitle: "指标单位",
+  axisXTitle: "日期",
+  title: "趋势图标题",
+  width: 900
+}
+```
+
+## 数据展示要点
+
+### 数据展示规范
+
+#### 1. 销售数据图表包括以下内容：
+- 每日加入人数对比（柱状图）
+- 每日资源数对比（柱状图）
+- 意向客户培养数对比（柱状图）
+- 每日开单数对比（柱状图）
+- 销售人员综合表现（雷达图）
+- 每日总加入人数趋势（折线图）
+- 每日总意向客户培养数趋势（折线图）
+- 每日总开单数趋势（折线图）
+- 每日资源总数趋势（折线图）
+
+#### 2. 颜色规范：
+- 使用鲜艳明亮的颜色
+- 不同销售人员使用不同颜色，保持一致性
+- 趋势图使用渐变色效果
+- 避免使用灰色等不显眼的颜色
+
+## 数据接入方法
+
+### 数据更新流程
+
+#### 1. 数据准备：
+- 销售人员数据格式：`{"category": "日期", "value": 数值, "group": "销售员姓名"}`
+- 趋势数据格式：`{"time": "日期", "value": 数值, "group": "指标名称"}`
+
+#### 2. 图表生成：
+- 使用mcp-server-chart服务生成图表
+- 柱状图调用：`mcp_mcp-server-chart_generate_column_chart`
+- 雷达图调用：`mcp_mcp-server-chart_generate_radar_chart`
+- 折线图调用：`mcp_mcp-server-chart_generate_line_chart`
+
+#### 3. 图表更新：
+- 生成新的图表URL后，替换HTML中对应的图片URL
+- 保持图表ID和alt属性一致
+
+## 示例操作流程
+
+### 图表更新示例
+
+#### 1. 准备销售数据，格式如下：
+```javascript
+[
+  {"category": "6月9日", "value": 37, "group": "韩大武"},
+  {"category": "6月10日", "value": 14, "group": "韩大武"},
+  // 其他数据...
+]
+```
+
+#### 2. 调用图表生成API：
+```javascript
+mcp_mcp-server-chart_generate_column_chart({
+  data: 数据,
+  height: 500,
+  axisYTitle: "加入人数",
+  title: "每日加入人数对比",
+  width: 900,
+  group: true
+})
+```
+
+#### 3. 获取返回的图表URL，更新HTML中的img标签src属性
+
+## 完整HTML模板
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>呈尚策划销售部数据对比图</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .charts-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .chart {
+            width: 100%;
+            margin-bottom: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow: hidden;
+        }
+        img {
+            width: 100%;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>呈尚策划销售部数据对比图</h1>
+        <p>6月9日至6月13日销售数据分析</p>
+    </div>
+    
+    <div class="charts-container">
+        <div class="chart">
+            <h2>每日加入人数对比</h2>
+            <img src="柱状图URL" alt="每日加入人数对比">
+        </div>
+
+        <div class="chart">
+            <h2>每日资源数对比</h2>
+            <img src="柱状图URL" alt="每日资源数对比">
+        </div>
+
+        <div class="chart">
+            <h2>意向客户培养数对比</h2>
+            <img src="柱状图URL" alt="意向客户培养数对比">
+        </div>
+
+        <div class="chart">
+            <h2>每日开单数对比</h2>
+            <img src="柱状图URL" alt="每日开单数对比">
+        </div>
+
+        <div class="chart">
+            <h2>销售人员综合表现</h2>
+            <img src="雷达图URL" alt="销售人员综合表现">
+        </div>
+
+        <div class="chart">
+            <h2>每日总加入人数趋势</h2>
+            <img src="折线图URL" alt="每日总加入人数趋势">
+        </div>
+        
+        <div class="chart">
+            <h2>每日总意向客户培养数趋势</h2>
+            <img src="折线图URL" alt="每日总意向客户培养数趋势">
+        </div>
+        
+        <div class="chart">
+            <h2>每日总开单数趋势</h2>
+            <img src="折线图URL" alt="每日总开单数趋势">
+        </div>
+        
+        <div class="chart">
+            <h2>每日资源总数趋势</h2>
+            <img src="折线图URL" alt="每日资源总数趋势">
+        </div>
+    </div>
+</body>
+</html>
+```
+
+<!-- 
+备注：
+1. 所有图表应优先使用带数据标签的版本，确保数据清晰可见
+2. 图表尺寸应保持一致，以提供统一的视觉效果
+3. 定期更新数据时，只需替换图片URL，保持HTML结构不变
+-->
+
+
